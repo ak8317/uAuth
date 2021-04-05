@@ -13,6 +13,7 @@ app.use(express.json());
 
 //routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/private', require('./routes/private'));
 
 //error middleware
 app.use(errorHandler);

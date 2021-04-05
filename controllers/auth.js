@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const crypto = require('crypto');
 const ErrorResponse = require('../utils/errorResponse');
+const jwt = require('jsonwebtoken');
 
 //@desc Register user
 exports.register = async (req, res, next) => {
@@ -13,10 +14,7 @@ exports.register = async (req, res, next) => {
       password,
     });
 
-    res.status(201).json({
-      success: true,
-      user,
-    });
+    sendToken(user, 201, res);
   } catch (err) {
     next(err);
   }
@@ -39,11 +37,13 @@ exports.login = async (req, res, next) => {
       return next(new ErrorResponse('Invalid Credentials', 401));
     }
 
-    res.status(200).json({
-      success: true,
-      user,
-    });
+    sendToken(user, 200, res);
   } catch (err) {
     next(err);
   }
+};
+
+const sendToken = (user, statusCode, res) => {
+  const token = user.getSignedJwtToken();
+  res.status(statusCode).json({ sucess: true, token });
 };
